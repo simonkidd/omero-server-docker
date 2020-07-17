@@ -8,6 +8,9 @@ RUN mkdir /opt/setup
 WORKDIR /opt/setup
 ADD playbook.yml requirements.yml /opt/setup/
 
+RUN mkdir /home/omero/.keystore \
+    openssl s_client -connect authorise.is.ed.ac.uk:636 -prexit </dev/null | openssl x509 -outform PEM | keytool -import -alias ldap -storepass KEYSTORE_PASSWORD -keystore /home/omero/.keystore -noprompt 
+
 RUN yum -y install epel-release \
     && yum -y install ansible sudo \
     && ansible-galaxy install -p /opt/setup/roles -r requirements.yml
